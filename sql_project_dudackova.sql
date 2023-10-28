@@ -60,10 +60,30 @@ FROM czechia_payroll cp
 GROUP BY industry_branch_code;
 
 
-SELECT *
-FROM czechia_payroll cp;
+SELECT payroll_year,payroll_quarter,industry_branch_code,value,value IN (
+	SELECT max(VALUE)
+	FROM czechia_payroll cp)
+FROM czechia_payroll cp
+ORDER BY value DESC; -- tímhle jsem zjistila jednu maximální hodnotu vůbec, není TO sice TO, co chci, ale možná BY mě TO mohlo někam odpíchnout
 
 
+SELECT payroll_year,payroll_quarter,industry_branch_code,value,value IN (
+	SELECT max(VALUE)
+	FROM czechia_payroll cp)
+FROM czechia_payroll cp
+ORDER BY value DESC;
+
+
+
+
+
+
+
+
+
+SELECT max(value),industry_branch_code 
+FROM czechia_payroll cp
+GROUP BY industry_branch_code; -- overit, jestli je TO pravda!!!
 
 
 
