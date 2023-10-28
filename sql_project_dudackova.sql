@@ -181,10 +181,12 @@ GROUP BY industry_branch_code,payroll_year; -- zatim posledni pokus, asi TO fung
 -- serazene podle average value a krome toho tam nemam zatim CASE-end
 
 
-SELECT industry_branch_code,avg(value) AS avg_value,payroll_year
+SELECT max(avg_value)
+FROM 
+(SELECT  industry_branch_code,payroll_year,avg(value) AS avg_value
 FROM czechia_payroll cp 
 WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
-GROUP BY industry_branch_code,payroll_year;
+GROUP BY industry_branch_code,payroll_year) AS xyz;
 
 -- --------------
 select worker_id, avgsal 
