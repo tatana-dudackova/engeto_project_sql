@@ -100,12 +100,33 @@ GROUP BY industry_branch_code,payroll_year; -- TO mi asi zjisti maximalni hodnot
 
 
 
-SELECT avg(value),industry_branch_code,payroll_year
+SELECT avg(value) AS avg_value,industry_branch_code,payroll_year
 FROM czechia_payroll cp
 WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
 GROUP BY industry_branch_code,payroll_year; -- pokusila jsem se udelat prumerne mzdy za kazde odvetvi v kazdem roce, radsi jeste overit, jestli TO dava smysl
 
 -- POZOR!!! value v teto tabulce mohou byt dve veci, dat si tedy pozor na value type!!! (podminka s value type code), toto pak take napsat do popisu k projektu
+
+
+-- pokus s window function
+SELECT industry_branch_code,payroll_year,
+avg(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS avg_value
+FROM czechia_payroll cp
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958';
+
+-- vzor z tohoto webu: https://www.sqlshack.com/sql-partition-by-clause-overview/
+SELECT Customercity, 
+       AVG(Orderamount) OVER(PARTITION BY Customercity) AS AvgOrderAmount, 
+       MIN(OrderAmount) OVER(PARTITION BY Customercity) AS MinOrderAmount, 
+       SUM(Orderamount) OVER(PARTITION BY Customercity) TotalOrderAmount
+FROM [dbo].[Orders];
+
+
+
+
+
+
+
 
 SELECT * 
 FROM czechia_payroll_value_type cpvt;
