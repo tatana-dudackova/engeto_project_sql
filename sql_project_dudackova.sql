@@ -86,6 +86,29 @@ FROM czechia_payroll cp
 GROUP BY industry_branch_code; -- overit, jestli je TO pravda!!!
 
 
+SELECT value,industry_branch_code 
+FROM czechia_payroll cp
+WHERE industry_branch_code = 'm'
+ORDER BY value  DESC 
+LIMIT 1; -- timto prikazem jsem zjistila, ze ten horni asi vychazi. tim padem jsem u toho horniho zjistila, jake jsou maximalni hodnoty u kazdeho odvetvi. 
+-- to taky neni zatim to, co chci, ale mam pocit, ze uz jsem bliz
+
+SELECT max(value),industry_branch_code,payroll_year
+FROM czechia_payroll cp
+WHERE industry_branch_code IS NOT NULL 
+GROUP BY industry_branch_code,payroll_year; -- TO mi asi zjisti maximalni hodnotu podle odvetvi a roku??? 
+
+
+
+SELECT avg(value),industry_branch_code,payroll_year
+FROM czechia_payroll cp
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
+GROUP BY industry_branch_code,payroll_year; -- pokusila jsem se udelat prumerne mzdy za kazde odvetvi v kazdem roce, radsi jeste overit, jestli TO dava smysl
+
+-- POZOR!!! value v teto tabulce mohou byt dve veci, dat si tedy pozor na value type!!! (podminka s value type code), toto pak take napsat do popisu k projektu
+
+SELECT * 
+FROM czechia_payroll_value_type cpvt;
 
 SELECT *
 FROM czechia_payroll_industry_branch cpib;
