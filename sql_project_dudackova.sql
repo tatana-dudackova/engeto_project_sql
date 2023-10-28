@@ -1,2 +1,2 @@
 SELECT *
-FROM economies;
+FROM economies e;
