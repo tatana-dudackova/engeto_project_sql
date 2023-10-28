@@ -111,7 +111,7 @@ FROM [dbo].[Orders];
 SELECT industry_branch_code,payroll_year,value,
 RANK () OVER (PARTITION BY industry_branch_code ORDER BY value) AS poradi,
 CASE 
-	WHEN (payroll_year + 1) > payroll_year THEN 'mzdy rostou' ------- pozn. - tohle nefunguje, zkusim prijoinovat
+	WHEN (payroll_year + 1) > payroll_year THEN 'mzdy rostou' -- ----- pozn. - tohle nefunguje, zkusim prijoinovat
 	ELSE 'mzdy jsou dalsi rok stejne nebo klesaji'
 END AS vysledek
 FROM czechia_payroll cp
@@ -119,22 +119,92 @@ WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958';
 
 
 
+
+
+
+SELECT *
+FROM czechia_payroll cp;
+
+-- mozna na to jdu ale celkove spatne a mozna bych spis mela zjistit, jestli nejvyssi value je v nejvyssim roce?
+
+
+SELECT industry_branch_code, payroll_year,avg(value) AS avg_value
+FROM czechia_payroll cp 
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
+GROUP BY industry_branch_code,payroll_year; 
+
+SELECT max(payroll_year),industry_branch_code
+FROM czechia_payroll cp 
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
+GROUP BY industry_branch_code;
+
+
 SELECT
-    cp.category_code, cpc.name,
-    cp.region_code, CONCAT(YEAR(cp.date_from), '/', MONTH(cp.date_from)) AS year_and_month,
-    REPLACE(CONCAT(cp.value, ' Kč / ', cpc.price_value, ' ', cpc.price_unit), '.', ',') AS price,
-    RANK() OVER (PARTITION BY cp.category_code ORDER BY cp.value DESC) AS value_rank
-FROM czechia_price cp
-JOIN czechia_price_category cpc
-    ON cp.category_code = cpc.code
-ORDER BY value_rank, cp.value DESC;
+    industry_branch_code
+FROM czechia_payroll
+WHERE value IN (
+    SELECT
+        MAX(value)
+    FROM czechia_payroll
+    WHERE value_type_code = 5958
+);
+
+where year in (
+select max (year)
+from czechia_payroll
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958');
+
+SELECT industry_branch_code,avg(value),payroll_year 
+FROM czechia_payroll cp 
+WHERE payroll_year IN  (
+SELECT max (payroll_year)
+FROM  czechia_payroll
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958')
+GROUP BY industry_branch_code,payroll_year; -- podle me TO nevychazi spravne, ale nevim :( )
+
+
+SELECT industry_branch_code,avg(value),payroll_year,
+CASE 
+	WHEN payroll_year IN (SELECT max(payroll_year) FROM czechia_payroll) THEN 'mzdy rostou'
+	ELSE 'neplati, ze mzdy rostou'
+END AS posouzeni
+FROM czechia_payroll cp 
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
+GROUP BY industry_branch_code,payroll_year; -- takhle BY TO podle me moznaa slo, sice TO nevychazi, ale mohla bych zkusit jeste jednou prijoinovat rok a nejak TO porovnat
+
+
+SELECT industry_branch_code,avg(value) AS avg_value,payroll_year,
+RANK () OVER (PARTITION BY industry_branch_code ORDER BY avg_value) AS poradi
+FROM czechia_payroll cp 
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
+GROUP BY industry_branch_code,payroll_year; -- zatim posledni pokus, asi TO funguje, ale poradi nejde po sobe, pac je TO 
+-- serazene podle average value a krome toho tam nemam zatim CASE-end
+
+
+SELECT industry_branch_code,avg(value) AS avg_value,payroll_year
+FROM czechia_payroll cp 
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
+GROUP BY industry_branch_code,payroll_year;
+
+-- --------------
+select worker_id, avgsal 
+from 
+(
+  select worker_id, avg(salary) as avgsal 
+  from workers 
+  group by worker_id
+) 
+where avgsal=(select  max(avgsal) 
+              from (select worker_id, avg(salary) as avgsal 
+                    from workers group by worker_id))
 
 
 
 
-
-
-
+select max(avg_salary)
+from (select worker_id, avg(salary) AS avg_salary
+      from workers
+      group by worker_id) As maxSalary;
 
 
 
@@ -147,3 +217,9 @@ FROM czechia_payroll_industry_branch cpib;
 SELECT *
 FROM czechia_price cp;
 
+
+SELECT *
+FROM czechia_payroll_unit cpu;
+
+SELECT *
+FROM czechia_payroll cp;
