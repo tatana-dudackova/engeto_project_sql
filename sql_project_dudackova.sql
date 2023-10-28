@@ -66,21 +66,6 @@ SELECT payroll_year,payroll_quarter,industry_branch_code,value,value IN (
 FROM czechia_payroll cp
 ORDER BY value DESC; -- tímhle jsem zjistila jednu maximální hodnotu vůbec, není TO sice TO, co chci, ale možná BY mě TO mohlo někam odpíchnout
 
-
-SELECT payroll_year,payroll_quarter,industry_branch_code,value,value IN (
-	SELECT max(VALUE)
-	FROM czechia_payroll cp)
-FROM czechia_payroll cp
-ORDER BY value DESC;
-
-
-
-
-
-
-
-
-
 SELECT max(value),industry_branch_code 
 FROM czechia_payroll cp
 GROUP BY industry_branch_code; -- overit, jestli je TO pravda!!!
@@ -112,7 +97,7 @@ GROUP BY industry_branch_code,payroll_year; -- pokusila jsem se udelat prumerne 
 SELECT industry_branch_code,payroll_year,
 avg(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS avg_value
 FROM czechia_payroll cp
-WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958';
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'; -- joooo, melo BY mi TO vychazet stejne podle GROUP BY i WINDOW FUNCTION, velky objev!!!! asi zapsat pak i do popisu projektu, mezi cim jsem se rozhodovala
 
 -- vzor z tohoto webu: https://www.sqlshack.com/sql-partition-by-clause-overview/
 SELECT Customercity, 
@@ -120,6 +105,31 @@ SELECT Customercity,
        MIN(OrderAmount) OVER(PARTITION BY Customercity) AS MinOrderAmount, 
        SUM(Orderamount) OVER(PARTITION BY Customercity) TotalOrderAmount
 FROM [dbo].[Orders];
+
+
+
+SELECT industry_branch_code,payroll_year,value,
+RANK () OVER (PARTITION BY industry_branch_code ORDER BY value) AS poradi,
+CASE 
+	WHEN (payroll_year + 1) > payroll_year THEN 'mzdy rostou' ------- pozn. - tohle nefunguje, zkusim prijoinovat
+	ELSE 'mzdy jsou dalsi rok stejne nebo klesaji'
+END AS vysledek
+FROM czechia_payroll cp
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'; 
+
+
+
+SELECT
+    cp.category_code, cpc.name,
+    cp.region_code, CONCAT(YEAR(cp.date_from), '/', MONTH(cp.date_from)) AS year_and_month,
+    REPLACE(CONCAT(cp.value, ' Kč / ', cpc.price_value, ' ', cpc.price_unit), '.', ',') AS price,
+    RANK() OVER (PARTITION BY cp.category_code ORDER BY cp.value DESC) AS value_rank
+FROM czechia_price cp
+JOIN czechia_price_category cpc
+    ON cp.category_code = cpc.code
+ORDER BY value_rank, cp.value DESC;
+
+
 
 
 
