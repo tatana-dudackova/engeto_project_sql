@@ -1,44 +1,44 @@
 /*
- * Zadání projektu
-Úvod do projektu
-Na vašem analytickém oddělení nezávislé společnosti, která se zabývá životní úrovní občanů, jste se dohodli, že se pokusíte odpovědět na pár definovaných výzkumných otázek, které adresují dostupnost základních potravin široké veřejnosti. Kolegové již vydefinovali základní otázky, na které se pokusí odpovědět a poskytnout tuto informaci tiskovému oddělení. Toto oddělení bude výsledky prezentovat na následující konferenci zaměřené na tuto oblast.
+ * ZadÃ¡nÃ­ projektu
+Ãšvod do projektu
+Na vaÅ¡em analytickÃ©m oddÄ›lenÃ­ nezÃ¡vislÃ© spoleÄ�nosti, kterÃ¡ se zabÃ½vÃ¡ Å¾ivotnÃ­ ÃºrovnÃ­ obÄ�anÅ¯, jste se dohodli, Å¾e se pokusÃ­te odpovÄ›dÄ›t na pÃ¡r definovanÃ½ch vÃ½zkumnÃ½ch otÃ¡zek, kterÃ© adresujÃ­ dostupnost zÃ¡kladnÃ­ch potravin Å¡irokÃ© veÅ™ejnosti. KolegovÃ© jiÅ¾ vydefinovali zÃ¡kladnÃ­ otÃ¡zky, na kterÃ© se pokusÃ­ odpovÄ›dÄ›t a poskytnout tuto informaci tiskovÃ©mu oddÄ›lenÃ­. Toto oddÄ›lenÃ­ bude vÃ½sledky prezentovat na nÃ¡sledujÃ­cÃ­ konferenci zamÄ›Å™enÃ© na tuto oblast.
 
-Potřebují k tomu od vás připravit robustní datové podklady, ve kterých bude možné vidět porovnání dostupnosti potravin na základě průměrných příjmů za určité časové období.
+PotÅ™ebujÃ­ k tomu od vÃ¡s pÅ™ipravit robustnÃ­ datovÃ© podklady, ve kterÃ½ch bude moÅ¾nÃ© vidÄ›t porovnÃ¡nÃ­ dostupnosti potravin na zÃ¡kladÄ› prÅ¯mÄ›rnÃ½ch pÅ™Ã­jmÅ¯ za urÄ�itÃ© Ä�asovÃ© obdobÃ­.
 
-Jako dodatečný materiál připravte i tabulku s HDP, GINI koeficientem a populací dalších evropských států ve stejném období, jako primární přehled pro ČR.
+Jako dodateÄ�nÃ½ materiÃ¡l pÅ™ipravte i tabulku s HDP, GINI koeficientem a populacÃ­ dalÅ¡Ã­ch evropskÃ½ch stÃ¡tÅ¯ ve stejnÃ©m obdobÃ­, jako primÃ¡rnÃ­ pÅ™ehled pro ÄŒR.
 
-Datové sady, které je možné použít pro získání vhodného datového podkladu
-Primární tabulky:
+DatovÃ© sady, kterÃ© je moÅ¾nÃ© pouÅ¾Ã­t pro zÃ­skÃ¡nÃ­ vhodnÃ©ho datovÃ©ho podkladu
+PrimÃ¡rnÃ­ tabulky:
 
-czechia_payroll – Informace o mzdách v různých odvětvích za několikaleté období. Datová sada pochází z Portálu otevřených dat ČR.
-czechia_payroll_calculation – Číselník kalkulací v tabulce mezd.
-czechia_payroll_industry_branch – Číselník odvětví v tabulce mezd.
-czechia_payroll_unit – Číselník jednotek hodnot v tabulce mezd.
-czechia_payroll_value_type – Číselník typů hodnot v tabulce mezd.
-czechia_price – Informace o cenách vybraných potravin za několikaleté období. Datová sada pochází z Portálu otevřených dat ČR.
-czechia_price_category – Číselník kategorií potravin, které se vyskytují v našem přehledu.
-Číselníky sdílených informací o ČR:
+czechia_payroll â€“ Informace o mzdÃ¡ch v rÅ¯znÃ½ch odvÄ›tvÃ­ch za nÄ›kolikaletÃ© obdobÃ­. DatovÃ¡ sada pochÃ¡zÃ­ z PortÃ¡lu otevÅ™enÃ½ch dat ÄŒR.
+czechia_payroll_calculation â€“ ÄŒÃ­selnÃ­k kalkulacÃ­ v tabulce mezd.
+czechia_payroll_industry_branch â€“ ÄŒÃ­selnÃ­k odvÄ›tvÃ­ v tabulce mezd.
+czechia_payroll_unit â€“ ÄŒÃ­selnÃ­k jednotek hodnot v tabulce mezd.
+czechia_payroll_value_type â€“ ÄŒÃ­selnÃ­k typÅ¯ hodnot v tabulce mezd.
+czechia_price â€“ Informace o cenÃ¡ch vybranÃ½ch potravin za nÄ›kolikaletÃ© obdobÃ­. DatovÃ¡ sada pochÃ¡zÃ­ z PortÃ¡lu otevÅ™enÃ½ch dat ÄŒR.
+czechia_price_category â€“ ÄŒÃ­selnÃ­k kategoriÃ­ potravin, kterÃ© se vyskytujÃ­ v naÅ¡em pÅ™ehledu.
+ÄŒÃ­selnÃ­ky sdÃ­lenÃ½ch informacÃ­ o ÄŒR:
 
-czechia_region – Číselník krajů České republiky dle normy CZ-NUTS 2.
-czechia_district – Číselník okresů České republiky dle normy LAU.
-Dodatečné tabulky:
+czechia_region â€“ ÄŒÃ­selnÃ­k krajÅ¯ ÄŒeskÃ© republiky dle normy CZ-NUTS 2.
+czechia_district â€“ ÄŒÃ­selnÃ­k okresÅ¯ ÄŒeskÃ© republiky dle normy LAU.
+DodateÄ�nÃ© tabulky:
 
-countries - Všemožné informace o zemích na světě, například hlavní město, měna, národní jídlo nebo průměrná výška populace.
-economies - HDP, GINI, daňová zátěž, atd. pro daný stát a rok.
-Výzkumné otázky
-Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?
-Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?
-Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?
-Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
-Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo násdujícím roce výraznějším růstem?
-Výstup projektu
-Pomozte kolegům s daným úkolem. Výstupem by měly být dvě tabulky v databázi, ze kterých se požadovaná data dají získat. Tabulky pojmenujte t_{jmeno}_{prijmeni}_project_SQL_primary_final (pro data mezd a cen potravin za Českou republiku sjednocených na totožné porovnatelné období – společné roky) a t_{jmeno}_{prijmeni}_project_SQL_secondary_final (pro dodatečná data o dalších evropských státech).
+countries - VÅ¡emoÅ¾nÃ© informace o zemÃ­ch na svÄ›tÄ›, napÅ™Ã­klad hlavnÃ­ mÄ›sto, mÄ›na, nÃ¡rodnÃ­ jÃ­dlo nebo prÅ¯mÄ›rnÃ¡ vÃ½Å¡ka populace.
+economies - HDP, GINI, daÅˆovÃ¡ zÃ¡tÄ›Å¾, atd. pro danÃ½ stÃ¡t a rok.
+VÃ½zkumnÃ© otÃ¡zky
+Rostou v prÅ¯bÄ›hu let mzdy ve vÅ¡ech odvÄ›tvÃ­ch, nebo v nÄ›kterÃ½ch klesajÃ­?
+Kolik je moÅ¾nÃ© si koupit litrÅ¯ mlÃ©ka a kilogramÅ¯ chleba za prvnÃ­ a poslednÃ­ srovnatelnÃ© obdobÃ­ v dostupnÃ½ch datech cen a mezd?
+KterÃ¡ kategorie potravin zdraÅ¾uje nejpomaleji (je u nÃ­ nejniÅ¾Å¡Ã­ percentuÃ¡lnÃ­ meziroÄ�nÃ­ nÃ¡rÅ¯st)?
+Existuje rok, ve kterÃ©m byl meziroÄ�nÃ­ nÃ¡rÅ¯st cen potravin vÃ½raznÄ› vyÅ¡Å¡Ã­ neÅ¾ rÅ¯st mezd (vÄ›tÅ¡Ã­ neÅ¾ 10 %)?
+MÃ¡ vÃ½Å¡ka HDP vliv na zmÄ›ny ve mzdÃ¡ch a cenÃ¡ch potravin? Neboli, pokud HDP vzroste vÃ½raznÄ›ji v jednom roce, projevÃ­ se to na cenÃ¡ch potravin Ä�i mzdÃ¡ch ve stejnÃ©m nebo nÃ¡sdujÃ­cÃ­m roce vÃ½raznÄ›jÅ¡Ã­m rÅ¯stem?
+VÃ½stup projektu
+Pomozte kolegÅ¯m s danÃ½m Ãºkolem. VÃ½stupem by mÄ›ly bÃ½t dvÄ› tabulky v databÃ¡zi, ze kterÃ½ch se poÅ¾adovanÃ¡ data dajÃ­ zÃ­skat. Tabulky pojmenujte t_{jmeno}_{prijmeni}_project_SQL_primary_final (pro data mezd a cen potravin za ÄŒeskou republiku sjednocenÃ½ch na totoÅ¾nÃ© porovnatelnÃ© obdobÃ­ â€“ spoleÄ�nÃ© roky) a t_{jmeno}_{prijmeni}_project_SQL_secondary_final (pro dodateÄ�nÃ¡ data o dalÅ¡Ã­ch evropskÃ½ch stÃ¡tech).
 
-Dále připravte sadu SQL, které z vámi připravených tabulek získají datový podklad k odpovězení na vytyčené výzkumné otázky. Pozor, otázky/hypotézy mohou vaše výstupy podporovat i vyvracet! Záleží na tom, co říkají data.
+DÃ¡le pÅ™ipravte sadu SQL, kterÃ© z vÃ¡mi pÅ™ipravenÃ½ch tabulek zÃ­skajÃ­ datovÃ½ podklad k odpovÄ›zenÃ­ na vytyÄ�enÃ© vÃ½zkumnÃ© otÃ¡zky. Pozor, otÃ¡zky/hypotÃ©zy mohou vaÅ¡e vÃ½stupy podporovat i vyvracet! ZÃ¡leÅ¾Ã­ na tom, co Å™Ã­kajÃ­ data.
 
-Na svém GitHub účtu vytvořte repozitář (může být soukromý), kam uložíte všechny informace k projektu – hlavně SQL skript generující výslednou tabulku, popis mezivýsledků (průvodní listinu) a informace o výstupních datech (například kde chybí hodnoty apod.).
+Na svÃ©m GitHub ÃºÄ�tu vytvoÅ™te repozitÃ¡Å™ (mÅ¯Å¾e bÃ½t soukromÃ½), kam uloÅ¾Ã­te vÅ¡echny informace k projektu â€“ hlavnÄ› SQL skript generujÃ­cÃ­ vÃ½slednou tabulku, popis mezivÃ½sledkÅ¯ (prÅ¯vodnÃ­ listinu) a informace o vÃ½stupnÃ­ch datech (napÅ™Ã­klad kde chybÃ­ hodnoty apod.).
 
-Neupravujte data v primárních tabulkách! Pokud bude potřeba transformovat hodnoty, dělejte tak až v tabulkách nebo pohledech, které si nově vytváříte.
+Neupravujte data v primÃ¡rnÃ­ch tabulkÃ¡ch! Pokud bude potÅ™eba transformovat hodnoty, dÄ›lejte tak aÅ¾ v tabulkÃ¡ch nebo pohledech, kterÃ© si novÄ› vytvÃ¡Å™Ã­te.
 
 
  * 
@@ -64,7 +64,7 @@ SELECT payroll_year,payroll_quarter,industry_branch_code,value,value IN (
 	SELECT max(VALUE)
 	FROM czechia_payroll cp)
 FROM czechia_payroll cp
-ORDER BY value DESC; -- tímhle jsem zjistila jednu maximální hodnotu vůbec, není TO sice TO, co chci, ale možná BY mě TO mohlo někam odpíchnout
+ORDER BY value DESC; -- tÃ­mhle jsem zjistila jednu maximÃ¡lnÃ­ hodnotu vÅ¯bec, nenÃ­ TO sice TO, co chci, ale moÅ¾nÃ¡ BY mÄ› TO mohlo nÄ›kam odpÃ­chnout
 
 SELECT max(value),industry_branch_code 
 FROM czechia_payroll cp
@@ -94,10 +94,27 @@ GROUP BY industry_branch_code,payroll_year; -- pokusila jsem se udelat prumerne 
 
 
 -- pokus s window function
-SELECT industry_branch_code,payroll_year,
-avg(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS avg_value
+SELECT id,industry_branch_code,payroll_year,
+avg(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS avg_value,value,
+min(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS min_value,
+max(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS max_value
 FROM czechia_payroll cp
 WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'; -- joooo, melo BY mi TO vychazet stejne podle GROUP BY i WINDOW FUNCTION, velky objev!!!! asi zapsat pak i do popisu projektu, mezi cim jsem se rozhodovala
+
+SELECT id, industry_branch_code,payroll_year,value,
+avg(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS avg_value,
+min(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS min_value,
+max(value) OVER (PARTITION BY industry_branch_code, payroll_year) AS max_value
+FROM czechia_payroll cp
+WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'; -- dalsi pokus, ale jeste moc nevim, jestli je TO k necemu dobry
+
+
+
+
+
+
+
+
 
 -- vzor z tohoto webu: https://www.sqlshack.com/sql-partition-by-clause-overview/
 SELECT Customercity, 
@@ -187,6 +204,48 @@ FROM
 FROM czechia_payroll cp 
 WHERE industry_branch_code IS NOT NULL AND value_type_code ='5958'
 GROUP BY industry_branch_code,payroll_year) AS xyz;
+
+
+SELECT a.country, a.life_exp_1970 , b.life_exp_2015,
+    round( b.life_exp_2015 / a.life_exp_1970, 2 ) as life_exp_ratio
+FROM (
+    SELECT le.country , le.life_expectancy as life_exp_1970
+    FROM life_expectancy le 
+    WHERE year = 1970
+    ) a JOIN (
+    SELECT le.country , le.life_expectancy as life_exp_2015
+    FROM life_expectancy le 
+    WHERE year = 2015
+    ) b
+    ON a.country = b.country
+; -- ukazka, jak prijoinovat sloupec ze stejne tabulky
+
+
+
+SELECT cp.id,cp2.id,cp.value,cp2.value,cp.payroll_year,cp2.payroll_year,cp.payroll_quarter,cp2.payroll_quarter 
+FROM czechia_payroll cp
+LEFT JOIN czechia_payroll cp2 
+ON cp.id=cp2.id+1
+WHERE cp.value_type_code ='5958';
+
+SELECT industry_branch_code, value,payroll_year,payroll_quarter, 
+LAG (Value,1)
+OVER (PARTITION BY industry_branch_code ORDER BY payroll_quarter) AS value_last_year
+FROM czechia_payroll cp
+WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958';
+
+
+SELECT min(id)
+FROM czechia_payroll cp;
+
+
+SELECT *
+
+FROM czechia_payroll cp;
+
+
+
+
 
 -- --------------
 select worker_id, avgsal 
