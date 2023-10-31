@@ -310,17 +310,13 @@ FROM czechia_payroll cp
 WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958'
 ORDER BY id; -- nelze, nezna TO ten sloupec value LAST YEAR... asi TO musim udelat trochu jinak
 
-WITH value_last_year AS (SELECT *,
-LAG (Value,1)
-OVER (PARTITION BY industry_branch_code ORDER BY id))
 SELECT *,
+LAG (Value,1)OVER (PARTITION BY industry_branch_code ORDER BY id) AS mzda_predchozi_obdobi,
 CASE 
-	WHEN value_last_year > value THEN 'mzda roste'
-	WHEN value_last_year < value THEN 'mzda klesa'
-	ELSE 'mzda zustala stejna'
+	WHEN LAG (Value,1) OVER (PARTITION BY industry_branch_code ORDER BY id) < value THEN 'mzda vzrostla'
+	WHEN LAG (Value,1) OVER (PARTITION BY industry_branch_code ORDER BY id) > value THEN 'mzda klesla'
+	ELSE 'mzda zustala stejna, nebo nemame blizsi informace'
 END AS vyvoj_mzdy
 FROM czechia_payroll cp
 WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958'
-ORDER BY id; 
-
-
+ORDER BY id; -- funguje TO, ale jeste zkusit nejak ucesat a overit, ze tam nejsou blbosti
