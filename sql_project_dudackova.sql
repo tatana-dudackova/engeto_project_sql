@@ -228,7 +228,7 @@ LEFT JOIN czechia_payroll cp2
 ON cp.id=cp2.id+1
 WHERE cp.value_type_code ='5958';
 
-SELECT industry_branch_code, value,payroll_year,payroll_quarter, 
+SELECT *,
 LAG (Value,1)
 OVER (PARTITION BY industry_branch_code ORDER BY payroll_quarter) AS value_last_year
 FROM czechia_payroll cp
@@ -240,7 +240,6 @@ FROM czechia_payroll cp;
 
 
 SELECT *
-
 FROM czechia_payroll cp;
 
 
@@ -283,4 +282,45 @@ SELECT *
 FROM czechia_payroll_unit cpu;
 
 SELECT *
-FROM czechia_payroll cp;
+FROM czechia_payroll cp
+WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958';
+-----------------------------
+NOVY POKUS, ty predchozi pak promazat
+
+1. výzkumná otázka
+
+SELECT *,
+LAG (Value,1)
+OVER (PARTITION BY industry_branch_code ORDER BY id) AS value_last_year
+FROM czechia_payroll cp
+WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958'
+ORDER BY id;-- vznikl mi nový sloupec s hodnotou za predchozi rok
+
+-- zkusim pridat novy sloupec s podminkou case, ktery by mi rekl, jestli hodnoty klesaji. jako dalsi krok bych pak jeste zkusila porovnat prumery.
+
+SELECT *,
+LAG (Value,1)
+OVER (PARTITION BY industry_branch_code ORDER BY id) AS value_last_year,
+CASE 
+	WHEN value_last_year > value THEN 'mzda roste'
+	WHEN value_last_year < value THEN 'mzda klesa'
+	ELSE 'mzda zustala stejna'
+END AS vyvoj_mzdy
+FROM czechia_payroll cp
+WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958'
+ORDER BY id; -- nelze, nezna TO ten sloupec value LAST YEAR... asi TO musim udelat trochu jinak
+
+WITH value_last_year AS (SELECT *,
+LAG (Value,1)
+OVER (PARTITION BY industry_branch_code ORDER BY id))
+SELECT *,
+CASE 
+	WHEN value_last_year > value THEN 'mzda roste'
+	WHEN value_last_year < value THEN 'mzda klesa'
+	ELSE 'mzda zustala stejna'
+END AS vyvoj_mzdy
+FROM czechia_payroll cp
+WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958'
+ORDER BY id; 
+
+
