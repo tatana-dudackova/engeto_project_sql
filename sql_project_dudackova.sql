@@ -340,8 +340,7 @@ LEFT JOIN czechia_price cp2
 ON cp.payroll_year = YEAR(cp2.date_from)
 LEFT JOIN economies e 
 ON cp.payroll_year = e.`year`
-WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958' AND e.country = 'czech republic'
-ORDER BY payroll_year;
+WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958' AND e.country = 'czech republic';
 
 SELECT *
 FROM czechia_payroll_calculation cpc;
