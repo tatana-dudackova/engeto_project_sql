@@ -334,6 +334,8 @@ SELECT cp.id,cp.value,cp.category_code,YEAR(cp.date_from),region_code
 FROM czechia_price cp
 ORDER BY year(cp.date_from);
 
+CREATE TABLE tana_pokus AS (
+
 SELECT *
 FROM czechia_payroll cp 
 LEFT JOIN czechia_price cp2
@@ -341,6 +343,9 @@ ON cp.payroll_year = YEAR(cp2.date_from)
 LEFT JOIN economies e 
 ON cp.payroll_year = e.`year`
 WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958' AND e.country = 'czech republic';
+
+
+
 
 SELECT *
 FROM czechia_payroll_calculation cpc;
