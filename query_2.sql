@@ -173,4 +173,4 @@ GROUP BY category_code,payroll_year,payroll_quarter
 ORDER BY payroll_year DESC, payroll_quarter DESC
 LIMIT 2);
 
--- TOHLE BY SNAD UZ MOHLA BEJT FINALNI ODPOVED NA MUJ DOTAZ!!!
+-- TOHLE BY SNAD UZ MOHLA BEJT FINALNI ODPOVED NA MUJ DOTAZ!!! - potom smazat predchozi mezikroky a popsat, jak jsem postupovala
