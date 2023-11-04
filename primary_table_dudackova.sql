@@ -18,11 +18,3 @@ WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958' AND e.c
 -- do finalni tabulky ho ale take nedam, uz ho mam ve where, tak je pak zbytecny. ale to omezeni je podstatne.
 -- mozna pak jeste prejmenovat sloupce
 
-
--- -----------------
-SELECT * 
-FROM t_tatana_dudackova_project_sql_primary_final;
-
-SELECT cp_id, payroll_value,industry_branch_code,payroll_year,payroll_quarter 
-FROM t_tatana_dudackova_project_sql_primary_final
-ORDER BY payroll_year; -- poznamka - zkusit prijoinovat znova rok a ctvrtleti
