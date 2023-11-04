@@ -1,2 +1,2 @@
 SELECT *
-FROM economies e;
+FROM t_tatana_dudackova_project_sql_primary_final ttdpspf;
