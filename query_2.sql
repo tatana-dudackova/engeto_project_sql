@@ -42,4 +42,135 @@ WHERE cp2_value IS NOT NULL AND category_code IN
 FROM czechia_price_category cpc
 WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%')
 ORDER BY payroll_year, payroll_quarter; -- pokus, jak TO udelat, jenomze zatim nemam srovnatelna obdobi, udaje o cenach jsou po mesicich
+-- --------------------------------
+
+
 -- 
+SELECT payroll_value,avg(cp2_value),category_code,payroll_year,payroll_quarter,round(payroll_value/avg(cp2_value),2) AS vypocet,
+CASE 
+	WHEN category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%') THEN 'kg chleba'
+	ELSE 'litrů mléka'
+END AS jednotka
+FROM t_tatana_dudackova_project_sql_primary_final
+WHERE cp2_value IS NOT NULL AND category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%')
+GROUP BY payroll_value,category_code,payroll_year,payroll_quarter; -- tady se mi povedlo do kejsu vybrat jednotku z jine tabulky
+-- 
+-- PRVNI SROVNATELNE OBDOBI
+
+
+SELECT payroll_value,avg(cp2_value),category_code,payroll_year,payroll_quarter,round(payroll_value/avg(cp2_value),2) AS vypocet,
+CASE 
+	WHEN category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%') THEN 'kg chleba'
+	ELSE 'litrů mléka'
+END AS jednotka
+FROM t_tatana_dudackova_project_sql_primary_final
+WHERE cp2_value IS NOT NULL AND category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%')
+GROUP BY payroll_value,category_code,payroll_year,payroll_quarter;
+ORDER BY payroll_year, payroll_quarter;
+LIMIT 2;
+
+POSLEDNI SROVNATELNE OBDOBI
+
+
+SELECT payroll_value,avg(cp2_value),category_code,payroll_year,payroll_quarter,round(payroll_value/avg(cp2_value),2) AS vypocet,
+CASE 
+	WHEN category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%') THEN 'kg chleba'
+	ELSE 'litrů mléka'
+END AS jednotka
+FROM t_tatana_dudackova_project_sql_primary_final
+WHERE cp2_value IS NOT NULL AND category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%')
+GROUP BY payroll_value,category_code,payroll_year,payroll_quarter;
+
+--
+-- PRVNI CTVRTLETI
+
+SELECT sum(payroll_value) AS celkove_mzdy_vsechna_odvetvi,avg(cp2_value) AS prumerna_cena_ctvrtleti,category_code,payroll_year,payroll_quarter,round(sum(payroll_value)/avg(cp2_value),2) AS vypocet,
+CASE 
+	WHEN category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%') THEN 'kg chleba'
+	ELSE 'litrů mléka'
+END AS jednotka
+FROM t_tatana_dudackova_project_sql_primary_final
+WHERE cp2_value IS NOT NULL AND category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%') 
+GROUP BY category_code,payroll_year,payroll_quarter
+ORDER BY payroll_year, payroll_quarter
+LIMIT 2;
+
+
+-- POSLEDNI CTVRTLETI
+SELECT sum(payroll_value) AS celkove_mzdy_vsechna_odvetvi,avg(cp2_value) AS prumerna_cena_ctvrtleti,category_code,payroll_year,payroll_quarter,round(sum(payroll_value)/avg(cp2_value),2) AS vypocet,
+CASE 
+	WHEN category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%') THEN 'kg chleba'
+	ELSE 'litrů mléka'
+END AS jednotka
+FROM t_tatana_dudackova_project_sql_primary_final
+WHERE cp2_value IS NOT NULL AND category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%') 
+GROUP BY category_code,payroll_year,payroll_quarter
+ORDER BY payroll_year DESC, payroll_quarter DESC
+LIMIT 2;
+
+-- POKUS O SLOUCENI PROSTREDNICTVIM UNION a jeste jsem vymenila znova sumu za prumer, pac jsem prisla na to, ze je to jinak zkreslene
+(SELECT avg(payroll_value) AS prumerne_mzdy_vsechna_odvetvi,avg(cp2_value) AS prumerna_cena_ctvrtleti,category_code,payroll_year,payroll_quarter,round(avg(payroll_value)/avg(cp2_value),2) AS vypocet,
+CASE 
+	WHEN category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%') THEN 'kg chleba'
+	ELSE 'litrů mléka'
+END AS jednotka
+FROM t_tatana_dudackova_project_sql_primary_final
+WHERE cp2_value IS NOT NULL AND category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%') 
+GROUP BY category_code,payroll_year,payroll_quarter
+ORDER BY payroll_year, payroll_quarter
+LIMIT 2)
+UNION
+(SELECT avg(payroll_value) AS prumerne_mzdy_vsechna_odvetvi,avg(cp2_value) AS prumerna_cena_ctvrtleti,category_code,payroll_year,payroll_quarter,round(avg(payroll_value)/avg(cp2_value),2) AS vypocet,
+CASE 
+	WHEN category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%') THEN 'kg chleba'
+	ELSE 'litrů mléka'
+END AS jednotka
+FROM t_tatana_dudackova_project_sql_primary_final
+WHERE cp2_value IS NOT NULL AND category_code IN 
+(SELECT code
+FROM czechia_price_category cpc
+WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%') 
+GROUP BY category_code,payroll_year,payroll_quarter
+ORDER BY payroll_year DESC, payroll_quarter DESC
+LIMIT 2);
+
+-- TOHLE BY SNAD UZ MOHLA BEJT FINALNI ODPOVED NA MUJ DOTAZ!!!
