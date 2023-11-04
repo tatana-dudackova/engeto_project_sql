@@ -1,2 +1,2 @@
-SELECT *,*
-FROM economies e;
+SELECT *
+FROM covid19_detail_global cdg;
