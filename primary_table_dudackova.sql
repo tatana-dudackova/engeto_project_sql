@@ -42,9 +42,56 @@ LEFT JOIN czechia_payroll cp3
 		AND cp.payroll_quarter = cp3.payroll_quarter
 WHERE cp.value_type_code ='5958' AND cp.calculation_code = '200' AND cp.industry_branch_code IS NOT NULL
 ORDER BY cp.industry_branch_code, cp.payroll_year, cp.payroll_quarter, cp.id);
-		
+-- tady jsem si vytvorila prvni mezitabulku, kde jsem prijoinovala sloupec ze stejne tabulky, abych mohla provadet mezirocni porovnani
+-- podminky pro value type code a calculation code viz vyse
+-- dale jsem provedla bokem podobny krok pro tabulku czechia price, ale tam jsem jeste musela datum prevest do jineho formatu a dost z nej udaje pro tyden, mesic, rok, ctvrtleti... = ruzna granularita		
+
+
+CREATE TABLE t_mezikrok2_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT *
-FROM t_mezikrok1_t_tatana_dudackova_project_sql_primary_final m1;
+FROM t_mezikrok_tatana_dudackova_czechia_price mpc
+LEFT JOIN t_mezikrok1_t_tatana_dudackova_project_sql_primary_final m1
+ON mpc.rok = m1.payroll_year
+AND mpc.ctvrtleti = m1.payroll_quarter);
+-- v tomto kroku spojuji pomocnou tabulku pro ceny s pomocnou tabulkou pro mzdy (obe maji pripojene sloupce s mezirocnimi hodnotami pro porovnani)
+-- v dalsim mezikroku se asi zbavim prebytecnych sloupcu, ne vsechny totiz budu potrebovat a zase vytvorim mezitabulku
+-- v konecne tabulce jeste budu potrebovat HDP a HDP + 1
+-- zbavit se techto sloupcu: value_type_code, unit_code, calculation_code, payroll_year, payroll_year_prev_year, payroll_quarter
+-- ktere sloupce nepotrebuji jsem si pro jistotu overila pomoci funkce select distinct - pokud se mi zobrazilo vice udaju, sloupce potrebuji
+-- u pomocne tabulky czechia price asi jeste pojmenovat mezikrok jako 1a
+
+
+-- tady se tedy zbavuji prebytecnych sloupcu, zbavila jsem se i duplicitnich udaju pro datumy
+CREATE TABLE t_mezikrok3_t_tatana_dudackova_project_sql_primary_final AS
+(SELECT 
+mzdy_id,
+kod_odvetvi,
+rok,
+ctvrtleti,
+mesic,
+tyden,
+vyse_mezd,
+vyse_mezd_prev_year,
+ceny_id,
+vyse_cen,
+vyse_cen_prev_year,
+category_code,
+region_code
+FROM t_mezikrok2_t_tatana_dudackova_project_sql_primary_final);
+
+
+
+-- tady jeste prijoinovavam tabulku pro HDP a HDP predchozi rok. Propojila jsem to pres roky, ale musela jsem jeste dat podminku, ze zeme se rovna ceska republika
+CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
+SELECT m3.*,e.GDP,e2.gdp AS gdp_prev_year
+FROM t_mezikrok3_t_tatana_dudackova_project_sql_primary_final m3
+LEFT JOIN economies e 
+ON rok = e.`year` AND e.country = 'czech republic'
+LEFT JOIN economies e2 
+ ON e.`year` = e2.`year`+1 AND e2.country = 'czech republic');
+
+
+
 
 
 /*
