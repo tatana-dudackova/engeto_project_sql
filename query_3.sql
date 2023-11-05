@@ -102,7 +102,10 @@ LEFT JOIN czechia_price cp4
 --
 -- pokus o zjednoduseni, aby se tabulka rychleji vytvorila
 
+CREATE INDEX i_pokusny_index
+ON czechia_payroll (id,value,payroll_year, payroll_quarter);
 
+DROP INDEX i_pokusny_index;
 
 CREATE TABLE pokus2_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT  
@@ -138,3 +141,61 @@ LEFT JOIN czechia_price cp4
 LEFT JOIN economies e2 
   ON cp.payroll_year = e.`year`+1
 WHERE cp.value_type_code ='5958' AND e.country = 'czech republic' AND cp.calculation_code = '200');
+
+
+
+-- novy pokus - snaha o optimalziaci dotazu - asi jsem mela spatne u posledniho sloupce e misto e2, achjo
+
+
+-- CREATE TABLE pokus2_t_tatana_dudackova_project_sql_primary_final AS (
+SELECT  
+	cp.id AS mzdy_id,
+	cp3.id AS mzdy_id_prev_year,
+	cp.value AS vyse_mezd,
+	cp3.value AS vyse_mezd_prev_year,
+	cp.payroll_year,
+	cp3.payroll_year AS payroll_year_prev_year,
+	cp.payroll_quarter,
+	cp2.id AS ceny_id,
+	cp2.value AS vyse_cen,
+	cp4.value AS vyse_cen_prev_year, 
+	cp2.category_code,
+	cp2.region_code,
+	e.GDP,
+	e2.gdp AS gdp_year_prev_year
+FROM czechia_payroll cp 
+LEFT JOIN czechia_price cp2
+	ON cp.payroll_year = YEAR(cp2.date_from)
+LEFT JOIN economies e 
+	ON cp.payroll_year = e.`year`
+LEFT JOIN czechia_payroll cp3 
+	ON cp.value_type_code = cp3.value_type_code
+		AND cp.calculation_code = cp3.calculation_code
+		AND cp.industry_branch_code = cp3.industry_branch_code 
+		AND cp.payroll_year = cp3.payroll_year +1
+		AND cp.payroll_quarter = cp3.payroll_quarter
+LEFT JOIN czechia_price cp4 
+	ON cp2.category_code = cp4.category_code 
+	AND cp2.region_code = cp4.region_code 
+	AND cp.payroll_year = YEAR(cp4.date_from)+1
+LEFT JOIN economies e2 
+  ON cp.payroll_year = e2.`year`+1
+WHERE cp.value_type_code ='5958' AND e.country = 'czech republic' AND cp.calculation_code = '200';
+
+
+
+
+
+
+
+
+CREATE INDEX i_pokusny_index2 ON czechia_price (date_from);
+
+DROP INDEX i_pokusny_index2 ON czechia_price;
+
+CREATE INDEX i_pokusny_index ON czechia_payroll (payroll_year);
+
+DROP INDEX i_pokusny_index ON czechia_payroll;
+
+
+
