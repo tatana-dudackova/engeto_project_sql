@@ -147,7 +147,7 @@ WHERE cp.value_type_code ='5958' AND e.country = 'czech republic' AND cp.calcula
 -- novy pokus - snaha o optimalziaci dotazu - asi jsem mela spatne u posledniho sloupce e misto e2, achjo
 
 
--- CREATE TABLE pokus2_t_tatana_dudackova_project_sql_primary_final AS (
+CREATE TABLE pokus2_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT  
 	cp.id AS mzdy_id,
 	cp3.id AS mzdy_id_prev_year,
@@ -180,7 +180,7 @@ LEFT JOIN czechia_price cp4
 	AND cp.payroll_year = YEAR(cp4.date_from)+1
 LEFT JOIN economies e2 
   ON cp.payroll_year = e2.`year`+1
-WHERE cp.value_type_code ='5958' AND e.country = 'czech republic' AND cp.calculation_code = '200';
+WHERE cp.value_type_code ='5958' AND e.country = 'czech republic' AND cp.calculation_code = '200');
 
 
 
