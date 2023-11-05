@@ -19,7 +19,7 @@ WHERE cp.industry_branch_code IS NOT NULL AND cp.value_type_code ='5958' AND e.c
 -- mozna pak jeste prejmenovat sloupce
 -- určitě napsat, že se mi to tvořilo strašně pomalu a proto jsem to musela rozdělit do několika příkazů
 
-CREATE TABLE mezikrok1_t_tatana_dudackova_project_sql_primary_final AS (
+CREATE TABLE t_mezikrok1_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT  
 	cp.id AS mzdy_id,
 	cp3.id AS mzdy_id_prev_year,
@@ -44,8 +44,10 @@ WHERE cp.value_type_code ='5958' AND cp.calculation_code = '200' AND cp.industry
 ORDER BY cp.industry_branch_code, cp.payroll_year, cp.payroll_quarter, cp.id);
 		
 SELECT *
-FROM mezikrok1_t_tatana_dudackova_project_sql_primary_final m1;
+FROM t_mezikrok1_t_tatana_dudackova_project_sql_primary_final m1;
 
+
+/*
 
 CREATE TABLE mezikrok2_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT 
@@ -151,10 +153,11 @@ LEFT JOIN economies e2
 WHERE cp.value_type_code ='5958' AND e.country = 'czech republic' AND cp.calculation_code = '200');
 
 -- 
+**/
 
 -- zkusim na TO jit uplne jinak a napred upravit tabulku czechia price... uz fakt nevim
 -- -------------------------------------------------------------------------------------------------------------------
-CREATE TABLE pokus_czechia_price_tana AS (
+CREATE TABLE t_mezikrok_tatana_dudackova_czechia_price AS (
 SELECT 
 cp.id AS ceny_id,
 cp.value AS vyse_cen,
@@ -171,14 +174,11 @@ LEFT JOIN czechia_price cp2
 ON cp.category_code = cp2.category_code 
 AND cp.region_code = cp2.region_code 
 AND year(cp.date_from) = year(cp2.date_from) +1
-AND week(cp.date_from) = week(cp2.date_from));
-
+AND week(cp.date_from) = week(cp2.date_from)); 
+-- transformovana tabulka pro czechia price, kam jsem prijoinovala vysi cen za predchozi rok
+-- musela jem upravit take format data = vypreparovani rok, ctvrtleti, mesice a tydne
+-- sloupec date_from by nebyl nutny, ale radsi jsem ho tam nechala pro kontrolu, zda cisla sedi
+-- vzhledem ke granularite dat jsem dala podminku rovnosti tydnu, aby se sparovaly vzdy ty spravne hodnoty
 
 SELECT *
-FROM pokus_czechia_price_tana
-ORDER BY rok,ctvrtleti,mesic,tyden,ceny_id;
-
-
-	cp2.region_code,
-	cp2.value AS vyse_cen,
-	cp4.value AS vyse_cen_prev_year, 
+FROM t_mezikrok_tatana_dudackova_czechia_price;
