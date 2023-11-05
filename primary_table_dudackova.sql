@@ -123,7 +123,6 @@ SELECT
 	cp2.date_to,
 	cp2.region_code,
 	cp2.value AS vyse_cen,
-	
 	cp4.value AS vyse_cen_prev_year, 
 	
 	e.GDP,
@@ -154,5 +153,32 @@ WHERE cp.value_type_code ='5958' AND e.country = 'czech republic' AND cp.calcula
 -- 
 
 -- zkusim na TO jit uplne jinak a napred upravit tabulku czechia price... uz fakt nevim
+-- -------------------------------------------------------------------------------------------------------------------
+CREATE TABLE pokus_czechia_price_tana AS (
+SELECT 
+cp.id AS ceny_id,
+cp.value AS vyse_cen,
+cp2.value AS vyse_cen_prev_year,
+cp.category_code,
+YEAR(cp.date_from) AS rok,
+quarter(cp.date_from) AS ctvrtleti,
+month(cp.date_from) AS mesic,
+week(cp.date_from) AS tyden,
+cp.date_from,
+cp.region_code
+FROM czechia_price cp
+LEFT JOIN czechia_price cp2
+ON cp.category_code = cp2.category_code 
+AND cp.region_code = cp2.region_code 
+AND year(cp.date_from) = year(cp2.date_from) +1
+AND week(cp.date_from) = week(cp2.date_from));
 
 
+SELECT *
+FROM pokus_czechia_price_tana
+ORDER BY rok,ctvrtleti,mesic,tyden,ceny_id;
+
+
+	cp2.region_code,
+	cp2.value AS vyse_cen,
+	cp4.value AS vyse_cen_prev_year, 
