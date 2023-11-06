@@ -92,6 +92,7 @@ AND mpc.ctvrtleti = m1.payroll_quarter);
 -- u pomocne tabulky czechia price asi jeste pojmenovat mezikrok jako 1a
 -- tabulka zacina az v roce 2006, od ktere mame spolecna data pro czechia payroll!!! - pouzila jsem pri joinovani prostrednictvim leveho joinu jako vychozi tabulku czechia price (prvni rok 2006), na to jsem pripojila czechia payroll (prvni udaje pro 2000), tj. udaje pro mzdy za leta, ktera nejsou spolecna (2000-2006, z czechia payroll) mi timto vypadla, ale to mi nijak nevadi, aspon mi takto zustane spolecny zacatek
 -- u posunutych dat mi navic pro czechia payroll zustavaji data z roku 2005, takze muzu snadno udelat mezirocni srovnani 2005/2006
+-- jeste je otazka, jestli neomezit i spolecna KONCOVA data, take jsou ruzne roky
 
 -- MEZIKROK 3: Zbavuji se prebytecnych sloupcu 
 CREATE TABLE t_mezikrok3_t_tatana_dudackova_project_sql_primary_final AS
