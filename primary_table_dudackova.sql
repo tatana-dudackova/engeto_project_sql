@@ -50,6 +50,7 @@ ORDER BY cp.industry_branch_code, cp.payroll_year, cp.payroll_quarter, cp.id);
 -- dale jsem provedla bokem podobny krok pro tabulku czechia price, ale tam jsem jeste musela datum prevest do jineho formatu a dost z nej udaje pro tyden, mesic, rok, ctvrtleti... = ruzna granularita		
 -- tento text pozdeji smazat (az budu mit ty poznamky vypsane nekde jinde)
 
+
 -- MEZIKROK 1a: Propojeni tabulky czechia_price se stejnou tabulkou (potrebuji pripojit hodnoty za predchozi rok). Take jsem potrebovala upravit datum.
 CREATE TABLE t_mezikrok_1a_tatana_dudackova_czechia_price AS (
 SELECT 
@@ -75,6 +76,7 @@ AND week(cp.date_from) = week(cp2.date_from));
 -- vzhledem ke granularite dat jsem dala podminku rovnosti tydnu, aby se sparovaly vzdy ty spravne hodnoty
 -- tento text pozdeji smazat, az ho budu mit jinde
 
+
 -- MEZIKROK 2: Propojuji obe pomocne tabulky z mezikroku 1 a 1a na zaklade roku a ctvrtleti. Zatim nechavam prebytecne sloupce, zbavim se jich v dalsim kroku.
 CREATE TABLE t_mezikrok2_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT *
@@ -88,6 +90,8 @@ AND mpc.ctvrtleti = m1.payroll_quarter);
 -- zbavit se techto sloupcu: value_type_code, unit_code, calculation_code, payroll_year, payroll_year_prev_year, payroll_quarter
 -- ktere sloupce nepotrebuji jsem si pro jistotu overila pomoci funkce select distinct - pokud se mi zobrazilo vice udaju, sloupce potrebuji
 -- u pomocne tabulky czechia price asi jeste pojmenovat mezikrok jako 1a
+-- tabulka zacina az v roce 2006, od ktere mame spolecna data pro czechia payroll!!! - pouzila jsem pri joinovani prostrednictvim leveho joinu jako vychozi tabulku czechia price (prvni rok 2006), na to jsem pripojila czechia payroll (prvni udaje pro 2000), tj. udaje pro mzdy za leta, ktera nejsou spolecna (2000-2006, z czechia payroll) mi timto vypadla, ale to mi nijak nevadi, aspon mi takto zustane spolecny zacatek
+-- u posunutych dat mi navic pro czechia payroll zustavaji data z roku 2005, takze muzu snadno udelat mezirocni srovnani 2005/2006
 
 -- MEZIKROK 3: Zbavuji se prebytecnych sloupcu 
 CREATE TABLE t_mezikrok3_t_tatana_dudackova_project_sql_primary_final AS
