@@ -51,6 +51,33 @@ ORDER BY cp.industry_branch_code, cp.payroll_year, cp.payroll_quarter, cp.id);
 -- tento text pozdeji smazat (az budu mit ty poznamky vypsane nekde jinde)
 
 
+-- MEZIKROK 1c: pripojuji znovu tabulku czechia_payroll, jelikoz potrebuji jeste sloupec pro mzdy z dalsiho roku
+
+CREATE TABLE t_mezikrok1c_t_tatana_dudackova_project_sql_primary_final AS (
+SELECT  
+	m1.mzdy_id,
+	m1.mzdy_id_prev_year,
+	m1.vyse_mezd,
+	m1.vyse_mezd_prev_year,
+	cp.value  AS vyse_mezd_next_year,
+	m1.value_type_code,
+	m1.unit_code,
+	m1.calculation_code,
+	m1.kod_odvetvi,
+	m1.payroll_year,
+	m1.payroll_year_prev_year,
+	m1.payroll_quarter
+FROM t_mezikrok1_t_tatana_dudackova_project_sql_primary_final m1
+LEFT JOIN czechia_payroll cp
+	ON cp.value_type_code = cp.value_type_code
+		AND m1.unit_code = cp.unit_code 
+		AND m1.calculation_code = cp.calculation_code
+		AND m1.kod_odvetvi = cp.industry_branch_code 
+		AND m1.payroll_year = cp.payroll_year -1
+		AND m1.payroll_quarter = cp.payroll_quarter
+WHERE m1.value_type_code ='5958' AND m1.calculation_code = '200' AND m1.kod_odvetvi  IS NOT NULL
+ORDER BY m1.kod_odvetvi, m1.payroll_year, m1.payroll_quarter, m1.mzdy_id);
+
 -- MEZIKROK 1a: Propojeni tabulky czechia_price se stejnou tabulkou (potrebuji pripojit hodnoty za predchozi rok). Take jsem potrebovala upravit datum.
 CREATE TABLE t_mezikrok_1a_tatana_dudackova_czechia_price AS (
 SELECT 
@@ -100,14 +127,14 @@ AND tmatdcp.tyden = week(cp2.date_from));
 
 
 
--- MEZIKROK 2: Propojuji obe pomocne tabulky z mezikroku 1 a 1b na zaklade roku a ctvrtleti. Zatim nechavam prebytecne sloupce, zbavim se jich v dalsim kroku.
+-- MEZIKROK 2: Propojuji obe pomocne tabulky z mezikroku 1c a 1b na zaklade roku a ctvrtleti. Zatim nechavam prebytecne sloupce, zbavim se jich v dalsim kroku.
+
 CREATE TABLE t_mezikrok2_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT *
 FROM t_mezikrok_1b_tatana_dudackova_czechia_price mpc
-LEFT JOIN t_mezikrok1_t_tatana_dudackova_project_sql_primary_final m1
+LEFT JOIN t_mezikrok1c_t_tatana_dudackova_project_sql_primary_final m1
 ON mpc.rok = m1.payroll_year
 AND mpc.ctvrtleti = m1.payroll_quarter);
-
 -- v tomto kroku spojuji pomocnou tabulku pro ceny s pomocnou tabulkou pro mzdy (obe maji pripojene sloupce s mezirocnimi hodnotami pro porovnani)
 -- v dalsim mezikroku se asi zbavim prebytecnych sloupcu, ne vsechny totiz budu potrebovat a zase vytvorim mezitabulku
 -- v konecne tabulce jeste budu potrebovat HDP a HDP + 1
@@ -129,13 +156,13 @@ mesic,
 tyden,
 vyse_mezd,
 vyse_mezd_prev_year,
+vyse_mezd_next_year,
 vyse_cen,
 vyse_cen_prev_year,
 vyse_cen_next_year,
 category_code,
 region_code
 FROM t_mezikrok2_t_tatana_dudackova_project_sql_primary_final);
-
 -- tady se tedy zbavuji prebytecnych sloupcu, zbavila jsem se i duplicitnich udaju pro datumy, sloupcu mzdy_id, ceny_id
 
 
@@ -149,9 +176,13 @@ LEFT JOIN economies e2
  ON e.`year` = e2.`year`+1 AND e2.country = 'czech republic');
 -- tady jeste prijoinovavam tabulku pro HDP a HDP predchozi rok. Propojila jsem to pres roky, ale musela jsem jeste dat podminku, ze zeme se rovna ceska republika
 
+SELECT *
+FROM t_mezikrok4_tatana_dudackova_project_sql_primary_final;
 
--- MEZIKROK 5
-CREATE TABLE t_mezikrok5_tatana_dudackova_project_sql_primary_final AS (
+
+-- FINALNI VERZE TABULKY
+
+CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
 SELECT 
 cpib.name AS nazev_odvetvi,
 m4.rok,
@@ -172,114 +203,7 @@ JOIN czechia_payroll_industry_branch cpib
 ON m4.kod_odvetvi = cpib.code 
 JOIN czechia_price_category cpc 
 ON m4.category_code=cpc.code);
+-- zde jsem jeste pripojila nazvy pro odvetvi a zbozi z tabulek czechia payroll industry branch a czechia price category
 
-SELECT *
-FROM t_mezikrok5_tatana_dudackova_project_sql_primary_final;
-
-SELECT *
+SELECT * 
 FROM t_tatana_dudackova_project_sql_primary_final;
-
--- TVORBA FINALNI TABULKY - join dalsi tabulky czechia_payroll
-
-
-
-CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
-SELECT 
-m5.nazev_odvetvi,
-m5.rok,
-m5.ctvrtleti,
-m5.mesic,
-m5.tyden,
-m5.vyse_mezd_prev_year,
-m5.vyse_mezd,
-m6.vyse_mezd AS vyse_mezd_next_year,
-m5.vyse_cen_prev_year,
-m5.vyse_cen,
-m5.vyse_cen_next_year,
-m5.nazev_zbozi,
-m5.region_code,
-m5.gdp,
-m5.gdp_prev_year
-FROM t_mezikrok5_tatana_dudackova_project_sql_primary_final m5
-JOIN t_mezikrok5_tatana_dudackova_project_sql_primary_final m6
-ON  m5.nazev_odvetvi = m6.nazev_odvetvi
-AND m5.rok = m6.rok-1
-AND m5.ctvrtleti = m6.ctvrtleti
-AND m5.mesic = m6.mesic
-AND m5.tyden = m6.tyden
-AND m5.nazev_zbozi = m6.nazev_zbozi
-AND m5.region_code = m6.region_code);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-ON 
-ttdpspf.kod_odvetvi = ttdpspf2.kod_odvetvi
-AND ttdpspf.rok = ttdpspf2.rok-1
-AND ttdpspf.ctvrtleti = ttdpspf2.ctvrtleti
-AND ttdpspf.mesic = ttdpspf2.mesic 
-AND ttdpspf.tyden = ttdpspf2.tyden 
-AND ttdpspf.category_code =  ttdpspf2.category_code
-AND ttdpspf.region_code = ttdpspf2.region_code;
-
-
-
-
-
-
-SELECT 
-ttdpspf.nazev_odvetvi,
-ttdpspf.rok,
-ttdpspf.ctvrtleti,
-ttdpspf.mesic,
-ttdpspf.tyden,
-ttdpspf.vyse_mezd,
-ttdpspf.vyse_mezd_prev_year,
-ttdpspf2.vyse_mezd AS vyse_mezd_next_year,
-ttdpspf.vyse_cen,
-ttdpspf.vyse_cen_prev_year,
-ttdpspf2.vyse_cen AS vyse_cen_
-
-FROM t_tatana_dudackova_project_sql_primary_final ttdpspf 
-JOIN t_tatana_dudackova_project_sql_primary_final ttdpspf2
-ON 
-ttdpspf.nazev_odvetvi  = ttdpspf2.nazev_odvetvi
-AND ttdpspf.rok = ttdpspf2.rok-1
-AND ttdpspf.ctvrtleti = ttdpspf2.ctvrtleti
-AND ttdpspf.mesic = ttdpspf2.mesic 
-AND ttdpspf.tyden = ttdpspf2.tyden 
-AND ttdpspf.nazev_odvetvi  =  ttdpspf2.nazev_odvetvi 
-AND ttdpspf.region_code = ttdpspf2.region_code;
-
-
-SELECT 
-ttdpspf.rok,
-ttdpspf.vyse_mezd_prev_year, 
-ttdpspf.vyse_mezd, 
-ttdpspf2.vyse_mezd AS vyse_mezd_next_year
-FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
-JOIN t_tatana_dudackova_project_sql_primary_final ttdpspf2
-ON 
-ttdpspf.kod_odvetvi = ttdpspf2.kod_odvetvi
-AND ttdpspf.rok = ttdpspf2.rok-1
-AND ttdpspf.ctvrtleti = ttdpspf2.ctvrtleti
-AND ttdpspf.mesic = ttdpspf2.mesic 
-AND ttdpspf.tyden = ttdpspf2.tyden 
-AND ttdpspf.category_code =  ttdpspf2.category_code
-AND ttdpspf.region_code = ttdpspf2.region_code;
