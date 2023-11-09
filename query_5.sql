@@ -10,32 +10,9 @@ CASE
 END AS zhodnoceni_zmeny_hdp
 FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
 ORDER BY rok DESC ;
-
--- poznamka: jeste porovnat s temi mzdami a cenami, slo by pouzit zavery predchoziho ukolu - DODELAT!!!
 -- pozn - overila jsem si na webu csu, ze je ten vypocet vyse dobre
 
 -- POKUS
-
-
-SELECT DISTINCT 
-rok,((GDP/gdp_prev_year*100)-100) AS zmena_hdp,
-(avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AS mezirocni_zmena_cen,
-((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100) AS mezirocni_zmena_mezd,
-CASE 
-	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AND ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)>10) THEN 'vyrazny narust hdp, mezd i cen'
-	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 OR  ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)>10) THEN 'vyrazny narust hdp a zaroven mezd nebo cen'
-	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AND ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)<10) THEN 'vyrazny narust hdp, ale mzdy ani ceny se nezmenily nijak vyrazne'
-	ELSE 'nevyrazny narust HDP'
-END AS zhodnoceni_zmeny_hdp
-FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
-GROUP BY rok,zhodnoceni_zmeny_hdp; -- tohle nefunguje, nejde TO seskupit :(
-
--- opravit kod viz vyse, nekde tam mam chybu, podle me by mohl byt problem v zavorkach
-
-
--- novy pokus
-
-
 SELECT DISTINCT 
 rok,((GDP/gdp_prev_year*100)-100) AS zmena_hdp,
 (avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AS mezirocni_zmena_cen,
@@ -48,6 +25,16 @@ CASE
 END AS zhodnoceni_zmeny
 FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
 GROUP BY rok; 
+
+
+SELECT *
+FROM t_tatana_dudackova_project_sql_primary_final ttdpspf;
+
+
+-- novy pokus
+
+
+
 
 -- jeste udelam jeden pokus, tedka radsi ukladam
 
@@ -72,5 +59,20 @@ AND ttdpspf.region_code = ttdpspf2.region_code;
 -- novy pokus o query 5
 
 
+SELECT DISTINCT 
+rok,((GDP/gdp_prev_year*100)-100) AS zmena_hdp,
+(avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AS mezirocni_zmena_cen,
+((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100) AS mezirocni_zmena_mezd,
+CASE 
+	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AND ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)>10) THEN 'vyrazny narust hdp, mezd i cen'
+	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 OR  ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)>10) THEN 'vyrazny narust hdp a zaroven bud mezd nebo cen'
+	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AND ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)<10) THEN 'vyrazny narust hdp, ale mzdy ani ceny se nezmenily nijak vyrazne'
+	ELSE 'nevyrazny narust HDP'
+END AS zhodnoceni_zmeny
+FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
+GROUP BY rok; 
 
 
+SELECT GDP,`year`
+FROM economies e 
+WHERE country = 'czech republic';
