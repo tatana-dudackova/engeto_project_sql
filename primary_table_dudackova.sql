@@ -97,7 +97,6 @@ AND mpc.ctvrtleti = m1.payroll_quarter);
 -- MEZIKROK 3: Zbavuji se prebytecnych sloupcu 
 CREATE TABLE t_mezikrok3_t_tatana_dudackova_project_sql_primary_final AS
 (SELECT 
-mzdy_id,
 kod_odvetvi,
 rok,
 ctvrtleti,
@@ -105,13 +104,13 @@ mesic,
 tyden,
 vyse_mezd,
 vyse_mezd_prev_year,
-ceny_id,
 vyse_cen,
 vyse_cen_prev_year,
 category_code,
 region_code
 FROM t_mezikrok2_t_tatana_dudackova_project_sql_primary_final);
--- tady se tedy zbavuji prebytecnych sloupcu, zbavila jsem se i duplicitnich udaju pro datumy
+-- tady se tedy zbavuji prebytecnych sloupcu, zbavila jsem se i duplicitnich udaju pro datumy, sloupcu mzdy_id, ceny_id
+
 
 -- TVORBA FINALNI PRIMARNI TABULKY:
 CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
@@ -124,5 +123,7 @@ LEFT JOIN economies e2
 
 -- tady jeste prijoinovavam tabulku pro HDP a HDP predchozi rok. Propojila jsem to pres roky, ale musela jsem jeste dat podminku, ze zeme se rovna ceska republika
 
+
 SELECT *
 FROM t_tatana_dudackova_project_sql_primary_final;
+

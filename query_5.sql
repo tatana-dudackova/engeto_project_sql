@@ -36,6 +36,14 @@ FROM t_tatana_dudackova_project_sql_primary_final ttdpspf;
 
 
 
+
+
+
+
+
+
+
+
 -- jeste udelam jeden pokus, tedka radsi ukladam
 
 -- pokus - prijoinovani finalni tabulky s posunem o rok na opacnou stranu
