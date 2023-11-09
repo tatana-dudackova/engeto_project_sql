@@ -103,6 +103,7 @@ AND week(cp.date_from) = week(cp2.date_from));
 -- vzhledem ke granularite dat jsem dala podminku rovnosti tydnu, aby se sparovaly vzdy ty spravne hodnoty
 -- tento text pozdeji smazat, az ho budu mit jinde
 
+
 -- MEZIKROK 1d: Propojeni tabulky z mezikroku 1c znovu s tabulkou czechia price, protoze na query5 potrebuji jeste ceny v dalsim roce
 CREATE TABLE t_mezikrok_1d_tatana_dudackova_czechia_price AS (
 SELECT 
@@ -124,6 +125,7 @@ AND tmatdcp.region_code = cp2.region_code
 AND tmatdcp.rok = year(cp2.date_from) -1
 AND tmatdcp.tyden = week(cp2.date_from));
 
+
 -- MEZIKROK 2: Propojuji obe pomocne tabulky z mezikroku 1b a 1d na zaklade roku a ctvrtleti. Zatim nechavam prebytecne sloupce, zbavim se jich v dalsim kroku.
 CREATE TABLE t_mezikrok2_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT *
@@ -139,6 +141,13 @@ AND mpc.ctvrtleti = m1.payroll_quarter);
 -- ktere sloupce nepotrebuji jsem si pro jistotu overila pomoci funkce select distinct - pokud se mi zobrazilo vice udaju, sloupce potrebuji
 -- tabulka zacina az v roce 2006, od ktere mame spolecna data pro czechia payroll!!! - pouzila jsem pri joinovani prostrednictvim leveho joinu jako vychozi tabulku czechia price (prvni rok 2006), na to jsem pripojila czechia payroll (prvni udaje pro 2000), tj. udaje pro mzdy za leta, ktera nejsou spolecna (2000-2006, z czechia payroll) mi timto vypadla, ale to mi nijak nevadi, aspon mi takto zustane spolecny zacatek
 -- u posunutych dat mi navic pro czechia payroll zustavaji data z roku 2005, takze muzu snadno udelat mezirocni srovnani 2005/2006
+
+SELECT *
+FROM pokus
+
+
+
+
 
 -- MEZIKROK 3: Zbavuji se prebytecnych sloupcu 
 CREATE TABLE t_mezikrok3_t_tatana_dudackova_project_sql_primary_final AS
