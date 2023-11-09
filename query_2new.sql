@@ -74,11 +74,7 @@ LIMIT 2);
 
 -- TOHLE BY SNAD UZ MOHLA BEJT FINALNI ODPOVED NA MUJ DOTAZ!!! - potom smazat predchozi mezikroky a popsat, jak jsem postupovala
 
-SELECT category_code,avg(value),year(date_from) 
-FROM czechia_price cp 
-WHERE category_code IN (SELECT code FROM czechia_price_category cpc WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%')
-GROUP BY category_code, year(date_from)
-ORDER BY year(date_from);
+
 
 
 SELECT category_code,avg(value),year(date_from),quarter(date_from)  
@@ -87,4 +83,25 @@ WHERE category_code IN (SELECT code FROM czechia_price_category cpc WHERE name L
 GROUP BY category_code, year(date_from),quarter(date_from)  
 ORDER BY year(date_from),quarter(date_from) ;
 
+SELECT category_code,avg(value),year(date_from) 
+FROM czechia_price cp 
+WHERE category_code IN (SELECT code FROM czechia_price_category cpc WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%')
+GROUP BY category_code, year(date_from)
+ORDER BY year(date_from);
+
+
 -- joo, prisla jsem na to, proc se to pocita rozdilne!!! - v jednom z dotazu pocitam prumer pro ctvrtleti a v druhem pro rok!!!!!
+
+-- jeste zjistit, jak se to vlastne pocita u mezd
+
+SELECT avg(value),payroll_year,payroll_quarter 
+FROM czechia_payroll cp
+WHERE value_type_code = '5958' AND calculation_code = '200'AND industry_branch_code IS NOT NULL AND payroll_year >=2006
+GROUP BY payroll_year,payroll_quarter; -- tady mi TO vychazi stejne jako v obou dotazech vyse! takze si bude lepsi TO udelat na TO ctvrtleti, odpovida TO zadani!!!!
+
+
+SELECT avg(value),payroll_year
+FROM czechia_payroll cp
+WHERE value_type_code = '5958' AND calculation_code = '200'AND industry_branch_code IS NOT NULL AND payroll_year >=2006
+GROUP BY payroll_year;
+
