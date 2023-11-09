@@ -15,20 +15,22 @@ ORDER BY rok DESC ;
 -- POKUS
 SELECT DISTINCT 
 rok,((GDP/gdp_prev_year*100)-100) AS zmena_hdp,
-(avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AS mezirocni_zmena_cen,
-((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100) AS mezirocni_zmena_mezd,
+((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100) AS ceny_mezirocne,
+((avg(vyse_mezd)/avg(vyse_mezd_prev_year)*100)-100) AS mzdy_mezirocne,
 CASE 
 	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AND ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)>10) THEN 'vyrazny narust hdp, mezd i cen'
 	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 OR  ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)>10) THEN 'vyrazny narust hdp a zaroven bud mezd nebo cen'
 	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen)/avg(vyse_cen_prev_year)*100)-100 AND ((avg(vyse_mezd)/avg(vyse_mezd_prev_year))*100 - 100)<10) THEN 'vyrazny narust hdp, ale mzdy ani ceny se nezmenily nijak vyrazne'
 	ELSE 'nevyrazny narust HDP'
-END AS zhodnoceni_zmeny_aktualni_rok,
+END AS vliv_aktualni_rok,
+((avg(vyse_cen_next_year)/avg(vyse_cen)*100)-100) AS ceny_mezirocne_pristi_rok,
+((avg(vyse_mezd_next_year)/avg(vyse_mezd)*100)-100) AS mzdy_mezirocne_pristi_rok,
 CASE 
 	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen_next_year)/avg(vyse_cen)*100)-100 AND ((avg(vyse_mezd_next_year)/avg(vyse_mezd))*100 - 100)>10) THEN 'vyrazny narust hdp, mezd i cen'
 	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen_next_year)/avg(vyse_cen)*100)-100 OR  ((avg(vyse_mezd_next_year)/avg(vyse_mezd))*100 - 100)>10) THEN 'vyrazny narust hdp a zaroven bud mezd nebo cen'
 	WHEN ((GDP/gdp_prev_year*100)-100) > 5 AND ((avg(vyse_cen_next_year)/avg(vyse_cen)*100)-100 AND ((avg(vyse_mezd_next_year)/avg(vyse_mezd))*100 - 100)<10) THEN 'vyrazny narust hdp, ale mzdy ani ceny se nezmenily nijak vyrazne'
 	ELSE 'nevyrazny narust HDP'
-END AS zhodnoceni_zmeny_pristi_rok
+END AS vliv_pristi_rok
 FROM t_tatana_dudackova_project_sql_primary_final 
 GROUP BY rok; 
 
