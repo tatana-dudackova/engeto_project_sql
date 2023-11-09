@@ -37,8 +37,6 @@ LIMIT 2);
 
 
 
-
-
 -- POKUS O SLOUCENI PROSTREDNICTVIM UNION a jeste jsem vymenila znova sumu za prumer, pac jsem prisla na to, ze je to jinak zkreslene
 (SELECT avg(payroll_value) AS prumerne_mzdy_vsechna_odvetvi,avg(cp2_value) AS prumerna_cena_ctvrtleti,category_code,payroll_year,payroll_quarter,round(avg(payroll_value)/avg(cp2_value),2) AS vypocet,
 CASE 
