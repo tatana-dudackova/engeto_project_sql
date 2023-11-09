@@ -51,4 +51,26 @@ GROUP BY rok;
 
 -- jeste udelam jeden pokus, tedka radsi ukladam
 
+-- pokus - prijoinovani finalni tabulky s posunem o rok na opacnou stranu
+
+SELECT 
+ttdpspf.rok,
+ttdpspf.vyse_mezd_prev_year, 
+ttdpspf.vyse_mezd, 
+ttdpspf2.vyse_mezd AS vyse_mezd_next_year
+FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
+JOIN t_tatana_dudackova_project_sql_primary_final ttdpspf2
+ON 
+ttdpspf.kod_odvetvi = ttdpspf2.kod_odvetvi
+AND ttdpspf.rok = ttdpspf2.rok-1
+AND ttdpspf.ctvrtleti = ttdpspf2.ctvrtleti
+AND ttdpspf.mesic = ttdpspf2.mesic 
+AND ttdpspf.tyden = ttdpspf2.tyden 
+AND ttdpspf.category_code =  ttdpspf2.category_code
+AND ttdpspf.region_code = ttdpspf2.region_code;
+
+-- novy pokus o query 5
+
+
+
 
