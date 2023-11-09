@@ -112,8 +112,8 @@ FROM t_mezikrok2_t_tatana_dudackova_project_sql_primary_final);
 -- tady se tedy zbavuji prebytecnych sloupcu, zbavila jsem se i duplicitnich udaju pro datumy, sloupcu mzdy_id, ceny_id
 
 
--- TVORBA FINALNI PRIMARNI TABULKY:
-CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
+-- MEZIKROK 4
+CREATE TABLE t_mezikrok4_tatana_dudackova_project_sql_primary_final AS (
 SELECT m3.*,e.GDP,e2.gdp AS gdp_prev_year
 FROM t_mezikrok3_t_tatana_dudackova_project_sql_primary_final m3
 LEFT JOIN economies e 
@@ -124,6 +124,27 @@ LEFT JOIN economies e2
 -- tady jeste prijoinovavam tabulku pro HDP a HDP predchozi rok. Propojila jsem to pres roky, ale musela jsem jeste dat podminku, ze zeme se rovna ceska republika
 
 
-SELECT *
-FROM t_tatana_dudackova_project_sql_primary_final;
+-- TVORBA FINALNI PRIMARNI TABULKY:
+CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
+SELECT 
+cpib.name AS nazev_odvetvi,
+m4.rok,
+m4.ctvrtleti,
+m4.mesic,
+m4.tyden,
+m4.vyse_mezd,
+m4.vyse_mezd_prev_year,
+m4.vyse_cen,
+m4.vyse_cen_prev_year,
+cpc.name AS nazev_zbozi,
+m4.region_code,
+m4.GDP,
+m4.gdp_prev_year 
+FROM t_mezikrok4_tatana_dudackova_project_sql_primary_final
+JOIN czechia_payroll_industry_branch cpib 
+ON m4.kod_odvetvi = cpib.code 
+JOIN czechia_price_category cpc 
+ON m4.category_code=cpc.code);
+
+
 
