@@ -73,3 +73,18 @@ ORDER BY payroll_year DESC, payroll_quarter DESC
 LIMIT 2);
 
 -- TOHLE BY SNAD UZ MOHLA BEJT FINALNI ODPOVED NA MUJ DOTAZ!!! - potom smazat predchozi mezikroky a popsat, jak jsem postupovala
+
+SELECT category_code,avg(value),year(date_from) 
+FROM czechia_price cp 
+WHERE category_code IN (SELECT code FROM czechia_price_category cpc WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%')
+GROUP BY category_code, year(date_from)
+ORDER BY year(date_from);
+
+
+SELECT category_code,avg(value),year(date_from),quarter(date_from)  
+FROM czechia_price cp 
+WHERE category_code IN (SELECT code FROM czechia_price_category cpc WHERE name LIKE '%chléb%' OR  name LIKE '%mléko%')
+GROUP BY category_code, year(date_from),quarter(date_from)  
+ORDER BY year(date_from),quarter(date_from) ;
+
+-- joo, prisla jsem na to, proc se to pocita rozdilne!!! - v jednom z dotazu pocitam prumer pro ctvrtleti a v druhem pro rok!!!!!
