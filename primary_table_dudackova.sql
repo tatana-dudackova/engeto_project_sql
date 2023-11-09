@@ -76,6 +76,77 @@ AND week(cp.date_from) = week(cp2.date_from));
 -- vzhledem ke granularite dat jsem dala podminku rovnosti tydnu, aby se sparovaly vzdy ty spravne hodnoty
 -- tento text pozdeji smazat, az ho budu mit jinde
 
+CREATE TABLE t_mezikrok_1b_tatana_dudackova_czechia_price AS (
+SELECT 
+tmatdcp.ceny_id,
+tmatdcp.vyse_cen,
+tmatdcp.vyse_cen_prev_year,
+cp2.value AS vyse_cen_next_year,
+tmatdcp.category_code,
+tmatdcp.rok,
+tmatdcp.ctvrtleti,
+tmatdcp.mesic,
+tmatdcp.tyden,
+tmatdcp.date_from,
+tmatdcp.region_code
+FROM t_mezikrok_1a_tatana_dudackova_czechia_price tmatdcp
+LEFT JOIN czechia_price cp2
+ON tmatdcp.category_code = cp2.category_code 
+AND tmatdcp.region_code = cp2.region_code 
+AND tmatdcp.rok = year(cp2.date_from) -1
+AND tmatdcp.tyden = week(cp2.date_from));
+
+
+SELECT vyse_cen_prev_year,vyse_cen,vyse_cen_next_year,rok,tyden,category_code,region_code
+FROM t_mezikrok_1b_tatana_dudackova_czechia_price
+WHERE vyse_cen_next_year IS NOT NULL AND category_code = '111303' AND (rok = '2012' OR rok = '2013' OR rok = '2014') AND region_code = 'cz010'
+ORDER BY tyden,rok ;
+
+WHERE (rok = '2017' OR rok = '2016' OR rok ='2015') AND tyden = '10' AND category_code = '114501';
+
+
+
+SELECT *
+FROM t_mezikrok_1b_tatana_dudackova_czechia_price
+WHERE rok = '2010';
+
+
+
+
+
+
+-- MEZIKROK 1B Propojeni tabulky z mezikroky 1a znovu s tabulkou czechia_price (potrebuji pripojit hodnoty za dalsi rok kvuli query 5)
+CREATE TABLE t_mezikrok_1b_tatana_dudackova_czechia_price AS (
+SELECT 
+cp.id AS ceny_id,
+cp.value AS vyse_cen,
+cp2.value AS vyse_cen_prev_year,
+cp3.value AS vyse_cen_next_year,
+cp.category_code,
+YEAR(cp.date_from) AS rok,
+quarter(cp.date_from) AS ctvrtleti,
+month(cp.date_from) AS mesic,
+week(cp.date_from) AS tyden,
+cp.date_from,
+cp.region_code
+FROM czechia_price cp
+LEFT JOIN czechia_price cp2
+	ON cp.category_code = cp2.category_code 
+	AND cp.region_code = cp2.region_code 
+	AND year(cp.date_from) = year(cp2.date_from) +1
+	AND week(cp.date_from) = week(cp2.date_from)
+LEFT JOIN czechia_price cp3
+	ON cp.category_code = cp3.category_code 
+	AND cp.region_code = cp3.region_code 
+	AND year(cp.date_from) = year(cp3.date_from) -1
+	AND week(cp.date_from) = week(cp3.date_from)); 
+
+
+
+
+
+
+
 
 -- MEZIKROK 2: Propojuji obe pomocne tabulky z mezikroku 1 a 1a na zaklade roku a ctvrtleti. Zatim nechavam prebytecne sloupce, zbavim se jich v dalsim kroku.
 CREATE TABLE t_mezikrok2_t_tatana_dudackova_project_sql_primary_final AS (
@@ -148,3 +219,61 @@ ON m4.category_code=cpc.code);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT 
+ttdpspf.nazev_odvetvi,
+ttdpspf.rok,
+ttdpspf.ctvrtleti,
+ttdpspf.mesic,
+ttdpspf.tyden,
+ttdpspf.vyse_mezd,
+ttdpspf.vyse_mezd_prev_year,
+ttdpspf2.vyse_mezd AS vyse_mezd_next_year,
+ttdpspf.vyse_cen,
+ttdpspf.vyse_cen_prev_year,
+ttdpspf2.vyse_cen AS vyse_cen_
+
+FROM t_tatana_dudackova_project_sql_primary_final ttdpspf 
+JOIN t_tatana_dudackova_project_sql_primary_final ttdpspf2
+ON 
+ttdpspf.nazev_odvetvi  = ttdpspf2.nazev_odvetvi
+AND ttdpspf.rok = ttdpspf2.rok-1
+AND ttdpspf.ctvrtleti = ttdpspf2.ctvrtleti
+AND ttdpspf.mesic = ttdpspf2.mesic 
+AND ttdpspf.tyden = ttdpspf2.tyden 
+AND ttdpspf.nazev_odvetvi  =  ttdpspf2.nazev_odvetvi 
+AND ttdpspf.region_code = ttdpspf2.region_code;
+
+
+SELECT 
+ttdpspf.rok,
+ttdpspf.vyse_mezd_prev_year, 
+ttdpspf.vyse_mezd, 
+ttdpspf2.vyse_mezd AS vyse_mezd_next_year
+FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
+JOIN t_tatana_dudackova_project_sql_primary_final ttdpspf2
+ON 
+ttdpspf.kod_odvetvi = ttdpspf2.kod_odvetvi
+AND ttdpspf.rok = ttdpspf2.rok-1
+AND ttdpspf.ctvrtleti = ttdpspf2.ctvrtleti
+AND ttdpspf.mesic = ttdpspf2.mesic 
+AND ttdpspf.tyden = ttdpspf2.tyden 
+AND ttdpspf.category_code =  ttdpspf2.category_code
+AND ttdpspf.region_code = ttdpspf2.region_code;
