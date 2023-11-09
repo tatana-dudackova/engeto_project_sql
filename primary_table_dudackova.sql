@@ -181,7 +181,6 @@ FROM t_mezikrok4_tatana_dudackova_project_sql_primary_final;
 
 
 -- FINALNI VERZE TABULKY
-
 CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
 SELECT 
 cpib.name AS nazev_odvetvi,
@@ -191,6 +190,7 @@ m4.mesic,
 m4.tyden,
 m4.vyse_mezd,
 m4.vyse_mezd_prev_year,
+m4.vyse_mezd_next_year,
 m4.vyse_cen,
 m4.vyse_cen_prev_year,
 m4.vyse_cen_next_year,
