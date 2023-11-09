@@ -7,5 +7,4 @@ CASE
 	ELSE 'vyrazna zmena nenastala'
 END AS porovnani_rustu_mezd_a_potravin
 FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
-GROUP BY rok ;
-
+GROUP BY rok;
