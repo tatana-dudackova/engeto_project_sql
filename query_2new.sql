@@ -92,7 +92,7 @@ ORDER BY year(date_from);
 
 -- joo, prisla jsem na to, proc se to pocita rozdilne!!! - v jednom z dotazu pocitam prumer pro ctvrtleti a v druhem pro rok!!!!!
 
--- jeste zjistit, jak se to vlastne pocita u mezd
+-- jeste overit, jak se to vlastne pocita u mezd
 
 SELECT avg(value),payroll_year,payroll_quarter 
 FROM czechia_payroll cp
