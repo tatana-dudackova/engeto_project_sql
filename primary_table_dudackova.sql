@@ -76,6 +76,8 @@ AND week(cp.date_from) = week(cp2.date_from));
 -- vzhledem ke granularite dat jsem dala podminku rovnosti tydnu, aby se sparovaly vzdy ty spravne hodnoty
 -- tento text pozdeji smazat, az ho budu mit jinde
 
+
+-- MEZIKROK 1b: Propojeni tabulky z mezikroku 1a znovu s tabulkou czechia price, protoze na query5 potrebuji jeste ceny v dalsim roce
 CREATE TABLE t_mezikrok_1b_tatana_dudackova_czechia_price AS (
 SELECT 
 tmatdcp.ceny_id,
@@ -97,64 +99,15 @@ AND tmatdcp.rok = year(cp2.date_from) -1
 AND tmatdcp.tyden = week(cp2.date_from));
 
 
-SELECT vyse_cen_prev_year,vyse_cen,vyse_cen_next_year,rok,tyden,category_code,region_code
-FROM t_mezikrok_1b_tatana_dudackova_czechia_price
-WHERE vyse_cen_next_year IS NOT NULL AND category_code = '111303' AND (rok = '2012' OR rok = '2013' OR rok = '2014') AND region_code = 'cz010'
-ORDER BY tyden,rok ;
 
-WHERE (rok = '2017' OR rok = '2016' OR rok ='2015') AND tyden = '10' AND category_code = '114501';
-
-
-
-SELECT *
-FROM t_mezikrok_1b_tatana_dudackova_czechia_price
-WHERE rok = '2010';
-
-
-
-
-
-
--- MEZIKROK 1B Propojeni tabulky z mezikroky 1a znovu s tabulkou czechia_price (potrebuji pripojit hodnoty za dalsi rok kvuli query 5)
-CREATE TABLE t_mezikrok_1b_tatana_dudackova_czechia_price AS (
-SELECT 
-cp.id AS ceny_id,
-cp.value AS vyse_cen,
-cp2.value AS vyse_cen_prev_year,
-cp3.value AS vyse_cen_next_year,
-cp.category_code,
-YEAR(cp.date_from) AS rok,
-quarter(cp.date_from) AS ctvrtleti,
-month(cp.date_from) AS mesic,
-week(cp.date_from) AS tyden,
-cp.date_from,
-cp.region_code
-FROM czechia_price cp
-LEFT JOIN czechia_price cp2
-	ON cp.category_code = cp2.category_code 
-	AND cp.region_code = cp2.region_code 
-	AND year(cp.date_from) = year(cp2.date_from) +1
-	AND week(cp.date_from) = week(cp2.date_from)
-LEFT JOIN czechia_price cp3
-	ON cp.category_code = cp3.category_code 
-	AND cp.region_code = cp3.region_code 
-	AND year(cp.date_from) = year(cp3.date_from) -1
-	AND week(cp.date_from) = week(cp3.date_from)); 
-
-
-
-
-
-
-
-
--- MEZIKROK 2: Propojuji obe pomocne tabulky z mezikroku 1 a 1a na zaklade roku a ctvrtleti. Zatim nechavam prebytecne sloupce, zbavim se jich v dalsim kroku.
+-- MEZIKROK 2: Propojuji obe pomocne tabulky z mezikroku 1 a 1b na zaklade roku a ctvrtleti. Zatim nechavam prebytecne sloupce, zbavim se jich v dalsim kroku.
 CREATE TABLE t_mezikrok2_t_tatana_dudackova_project_sql_primary_final AS (
 SELECT *
-FROM t_mezikrok_1a_tatana_dudackova_czechia_price mpc
+FROM t_mezikrok_1b_tatana_dudackova_czechia_price mpc
 LEFT JOIN t_mezikrok1_t_tatana_dudackova_project_sql_primary_final m1
 ON mpc.rok = m1.payroll_year
 AND mpc.ctvrtleti = m1.payroll_quarter);
+
 -- v tomto kroku spojuji pomocnou tabulku pro ceny s pomocnou tabulkou pro mzdy (obe maji pripojene sloupce s mezirocnimi hodnotami pro porovnani)
 -- v dalsim mezikroku se asi zbavim prebytecnych sloupcu, ne vsechny totiz budu potrebovat a zase vytvorim mezitabulku
 -- v konecne tabulce jeste budu potrebovat HDP a HDP + 1
@@ -164,6 +117,7 @@ AND mpc.ctvrtleti = m1.payroll_quarter);
 -- tabulka zacina az v roce 2006, od ktere mame spolecna data pro czechia payroll!!! - pouzila jsem pri joinovani prostrednictvim leveho joinu jako vychozi tabulku czechia price (prvni rok 2006), na to jsem pripojila czechia payroll (prvni udaje pro 2000), tj. udaje pro mzdy za leta, ktera nejsou spolecna (2000-2006, z czechia payroll) mi timto vypadla, ale to mi nijak nevadi, aspon mi takto zustane spolecny zacatek
 -- u posunutych dat mi navic pro czechia payroll zustavaji data z roku 2005, takze muzu snadno udelat mezirocni srovnani 2005/2006
 -- jeste je otazka, jestli neomezit i spolecna KONCOVA data, take jsou ruzne roky
+
 
 -- MEZIKROK 3: Zbavuji se prebytecnych sloupcu 
 CREATE TABLE t_mezikrok3_t_tatana_dudackova_project_sql_primary_final AS
@@ -177,9 +131,11 @@ vyse_mezd,
 vyse_mezd_prev_year,
 vyse_cen,
 vyse_cen_prev_year,
+vyse_cen_next_year,
 category_code,
 region_code
 FROM t_mezikrok2_t_tatana_dudackova_project_sql_primary_final);
+
 -- tady se tedy zbavuji prebytecnych sloupcu, zbavila jsem se i duplicitnich udaju pro datumy, sloupcu mzdy_id, ceny_id
 
 
@@ -191,12 +147,11 @@ LEFT JOIN economies e
 ON rok = e.`year` AND e.country = 'czech republic'
 LEFT JOIN economies e2 
  ON e.`year` = e2.`year`+1 AND e2.country = 'czech republic');
-
 -- tady jeste prijoinovavam tabulku pro HDP a HDP predchozi rok. Propojila jsem to pres roky, ale musela jsem jeste dat podminku, ze zeme se rovna ceska republika
 
 
--- TVORBA FINALNI PRIMARNI TABULKY:
-CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
+-- MEZIKROK 5
+CREATE TABLE t_mezikrok5_tatana_dudackova_project_sql_primary_final AS (
 SELECT 
 cpib.name AS nazev_odvetvi,
 m4.rok,
@@ -207,16 +162,53 @@ m4.vyse_mezd,
 m4.vyse_mezd_prev_year,
 m4.vyse_cen,
 m4.vyse_cen_prev_year,
+m4.vyse_cen_next_year,
 cpc.name AS nazev_zbozi,
 m4.region_code,
 m4.GDP,
 m4.gdp_prev_year 
-FROM t_mezikrok4_tatana_dudackova_project_sql_primary_final
+FROM t_mezikrok4_tatana_dudackova_project_sql_primary_final m4
 JOIN czechia_payroll_industry_branch cpib 
 ON m4.kod_odvetvi = cpib.code 
 JOIN czechia_price_category cpc 
 ON m4.category_code=cpc.code);
 
+SELECT *
+FROM t_mezikrok5_tatana_dudackova_project_sql_primary_final;
+
+SELECT *
+FROM t_tatana_dudackova_project_sql_primary_final;
+
+-- TVORBA FINALNI TABULKY - join dalsi tabulky czechia_payroll
+
+
+
+CREATE TABLE t_tatana_dudackova_project_sql_primary_final AS (
+SELECT 
+m5.nazev_odvetvi,
+m5.rok,
+m5.ctvrtleti,
+m5.mesic,
+m5.tyden,
+m5.vyse_mezd_prev_year,
+m5.vyse_mezd,
+m6.vyse_mezd AS vyse_mezd_next_year,
+m5.vyse_cen_prev_year,
+m5.vyse_cen,
+m5.vyse_cen_next_year,
+m5.nazev_zbozi,
+m5.region_code,
+m5.gdp,
+m5.gdp_prev_year
+FROM t_mezikrok5_tatana_dudackova_project_sql_primary_final m5
+JOIN t_mezikrok5_tatana_dudackova_project_sql_primary_final m6
+ON  m5.nazev_odvetvi = m6.nazev_odvetvi
+AND m5.rok = m6.rok-1
+AND m5.ctvrtleti = m6.ctvrtleti
+AND m5.mesic = m6.mesic
+AND m5.tyden = m6.tyden
+AND m5.nazev_zbozi = m6.nazev_zbozi
+AND m5.region_code = m6.region_code);
 
 
 
@@ -231,6 +223,20 @@ ON m4.category_code=cpc.code);
 
 
 
+
+
+
+
+
+
+ON 
+ttdpspf.kod_odvetvi = ttdpspf2.kod_odvetvi
+AND ttdpspf.rok = ttdpspf2.rok-1
+AND ttdpspf.ctvrtleti = ttdpspf2.ctvrtleti
+AND ttdpspf.mesic = ttdpspf2.mesic 
+AND ttdpspf.tyden = ttdpspf2.tyden 
+AND ttdpspf.category_code =  ttdpspf2.category_code
+AND ttdpspf.region_code = ttdpspf2.region_code;
 
 
 
