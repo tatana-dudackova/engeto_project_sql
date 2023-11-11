@@ -1,6 +1,4 @@
 
--- DOUFEJME, ze uz finalni dotaz
-
 SELECT DISTINCT 
 	rok,
 	((GDP/gdp_prev_year*100)-100) AS zmena_hdp,
@@ -23,12 +21,4 @@ END AS 'posouzeni vlivu dalsi rok'
 FROM t_tatana_dudackova_project_sql_primary_final ttdpspf
 GROUP BY rok 
 ORDER BY rok ;
-
--- tady asi bude dulezity ten komentar. Hranici jsem si u vsech tri hodnot nakonec zvolila 5
--- ze zadani nevyplyvalo, jestli chceme vztah mezi mzdami a cenami posuzovat pro obe promenne zaroven a nebo zvlast, slovo "ci" se da chapat ruzne 
--- ja prikaz sestavila tak, aby podminka platila, pokud vzrostla nad stanovenou hranici alespon jedna moznost
--- krome toho se take mohlo stat, ze vzrostly vyrazne ceny nebo mzdy, ale ne vlivem vyrazneho rustu hdp - pro takovou variantu jsem ale nezvolila specialni posouzeni - jakmile neplati podminka vyrazneho rustu hdp, je to jedno
--- okomentovat, kdy to tedy vubec vyslo
--- pro zajimavost napsat, ze jsem si napred udelala dotaz, kde jsem si porovnala pouze zmeny hdp podle let a overila jsem si na webu csu, ze mi to vyslo spravne :)
-
 
