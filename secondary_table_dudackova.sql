@@ -1,4 +1,4 @@
-/* SEKUNDARNI TABULKA*/
+/** SEKUNDARNI TABULKA**/
 
 CREATE TABLE t_tatana_dudackova_project_sql_secondary_final AS (
 SELECT c.country,c.population,e.`year` AS `year`,e.gdp,e.gini,e.taxes
