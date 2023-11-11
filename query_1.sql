@@ -8,5 +8,3 @@ END AS mezirocni_srovnani
 FROM t_tatana_dudackova_project_sql_primary_final
 ORDER BY mezirocni_srovnani, nazev_odvetvi, rok,ctvrtleti;
 
--- podle sloupce mezirocni_srovnani zjistuji, ze nekdy doslo k mezirocnimu poklesu, takze neni pravda, ze by mzdy porad jen rostly
-
