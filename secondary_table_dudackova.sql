@@ -7,5 +7,3 @@ WHERE e.`year` BETWEEN
 	(SELECT min(rok) FROM t_tatana_dudackova_project_sql_primary_final) AND 
 	(SELECT max(rok) FROM t_tatana_dudackova_project_sql_primary_final));
 
--- vyber roku jsem puvodne chtela udelat pomoci in, vnoreneho order by a limit, ale vratila se mi chybova hlaska, ze tato verze maria DB zvolenou kombinaci prikazu zatim nepodporuje
-
